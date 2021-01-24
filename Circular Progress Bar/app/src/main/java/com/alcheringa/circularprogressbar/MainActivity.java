@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),
                         R.anim.fadein);
 
-                img.setVisibility(v.VISIBLE);
+                img.setVisibility(View.VISIBLE);
                 img.startAnimation(animation);
 
             }
@@ -106,18 +106,18 @@ public class MainActivity extends AppCompatActivity {
         catch(IOException e){}
     }
     public void shareit(){
-//        Uri path= FileProvider.getUriForFile(getBaseContext(),"com.newsapp.aavaaz.app",imagepath);
-//        Intent share=new Intent();
-//        share.setAction(Intent.ACTION_SEND);
+        Uri path= FileProvider.getUriForFile(getBaseContext(),"com.alcheringa.circularprogressbar",imagepath);
+        Intent share=new Intent();
+        share.setAction(Intent.ACTION_SEND);
 //        share.putExtra(Intent.EXTRA_TEXT,"जागरूक रहें। समय बचाओ। 60 शब्दों में समाचार पढ़ने के लिए Aavaaz डाउनलोड करें। http://bit.ly/newsaavaaz");
-//        share.putExtra(Intent.EXTRA_STREAM,path);
-//        share.setType("image/*");
-//        startActivity(Intent.createChooser(share,"Share..."));
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri uri = Uri.fromFile(imagepath);
-        intent.setDataAndType(uri,"image/jpeg");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        this.startActivity(intent);
+        share.putExtra(Intent.EXTRA_STREAM,path);
+        share.setType("image/*");
+        startActivity(Intent.createChooser(share,"Share..."));
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        Uri uri = Uri.fromFile(imagepath);
+//        intent.setDataAndType(uri,"image/jpeg");
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        this.startActivity(intent);
 
     }
 
