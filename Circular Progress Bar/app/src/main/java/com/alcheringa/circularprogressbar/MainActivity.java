@@ -1,6 +1,8 @@
 package com.alcheringa.circularprogressbar;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.newsapp.aavaaz.app.secondpage.Homeis;
 
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar progressbar;
     File imagepath;
+    File file=null;
     Button share;
     private TextView progresstext;
     int steps = 0;
@@ -65,11 +69,59 @@ public class MainActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bitmap bitmap=takescreen();
-                saveBitmap(bitmap);
-                shareit();
+                if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED)
+                {ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
+//                Bitmap bitmap=takescreen();
+//                saveBitmap(bitmap);
+//                shareit();
+                View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+                Bitmap bmp=getScreenShot(rootView);
+                store(bmp,"file.png");
+                shareImage(file);
             }
         });
+
+
+    }
+    public static Bitmap getScreenShot(View view) {
+        View screenView = view.getRootView();
+        screenView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(screenView.getDrawingCache());
+        screenView.setDrawingCacheEnabled(false);
+        return bitmap;
+
+    }
+    public void store(Bitmap bm, String fileName){
+        final String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
+        File dir = new File(dirPath);
+        if(!dir.exists())
+            dir.mkdirs();
+        file = new File(dirPath, fileName);
+        try {
+            FileOutputStream fOut = new FileOutputStream(file);
+            bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Toast toast = Toast.makeText(getApplicationContext(),"FAILED",Toast.LENGTH_SHORT);
+        }
+    }
+    private void shareImage(File file){
+        Uri uri = Uri.fromFile(file);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/*");
+
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        try {
+            startActivity(Intent.createChooser(intent, "Share Screenshot"));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getApplicationContext(), "No App Available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateProgressbar(){
@@ -101,9 +153,8 @@ public class MainActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.PNG,100,fos);
             fos.flush();
             fos.close();
-        }catch(FileNotFoundException e){
+        } catch(IOException ignored){
         }
-        catch(IOException e){}
     }
     public void shareit(){
         Uri path= FileProvider.getUriForFile(getBaseContext(),"com.alcheringa.circularprogressbar",imagepath);
@@ -126,7 +177,10 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap takescreen(){
         View root=findViewById(android.R.id.content).getRootView();
         root.setDrawingCacheEnabled(true);
+
+
         return root.getDrawingCache();
+
 
     }
 }
