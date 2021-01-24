@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void saveBitmap(Bitmap bitmap){
-        imagepath=new File(Environment.getExternalStorageDirectory() +"/Pictures/"+"screenshot.png");
+        imagepath=new File(Environment.getExternalStorageDirectory() +"/Pictures/"+"screenshot.jpg");
         FileOutputStream fos;
         String path;
         //File file=new File(path);
@@ -109,8 +109,10 @@ public class MainActivity extends AppCompatActivity {
         Uri path= FileProvider.getUriForFile(getBaseContext(),"com.alcheringa.circularprogressbar",imagepath);
         Intent share=new Intent();
         share.setAction(Intent.ACTION_SEND);
-//        share.putExtra(Intent.EXTRA_TEXT,"जागरूक रहें। समय बचाओ। 60 शब्दों में समाचार पढ़ने के लिए Aavaaz डाउनलोड करें। http://bit.ly/newsaavaaz");
-        share.putExtra(Intent.EXTRA_STREAM,path);
+        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Uri uri = Uri.fromFile(imagepath);
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+//        share.putExtra(Intent.EXTRA_STREAM,path);
         share.setType("image/*");
         startActivity(Intent.createChooser(share,"Share..."));
 //        Intent intent = new Intent(Intent.ACTION_VIEW);
