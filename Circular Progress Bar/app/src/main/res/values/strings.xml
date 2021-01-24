@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">CircularProgressBar</string>
+    <string name="_10000_steps">+10000 steps</string>
+    <string name="_60">60%</string>
+    <string name="_0">0%</string>
+    <string name="todo1">TODO</string>
+    <string name="button">Button</string>
+    <string name="todo2">TODO</string>
+    <string name="animate">animate</string>
+    <string name="todo">TODO</string>
+    <string name="share">Share</string>
+</resources>
